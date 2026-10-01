@@ -5,38 +5,43 @@ public static class ExpresionEvaluator
     public static double Evalute(string infix)
     {
         var postfix = ToPostfix(infix);
-        return = EvalutePostfix(postfix);
+        return EvalutePostfix(postfix); 
     }
 
-    private static object EvalutePostfix(string postfix)
+    private static string ToPostfix(string infix)
     {
         var postfix = string.Empty;
         var stack = new Stack<char>();
-        foreach (var item in postfix)
+        foreach (var item in infix)
         {
-            if (item = ')')
-            {
-
-            }
-            else
-            {
-
-            }
             if (IsOperator(item))
             {
-                if (stack.Count == 0)
+                if (item == ')')
                 {
-                    stack.Push(item);
+                    var ope = stack.Pop();
+                    while (ope != '(')
+                    {
+                        postfix += ope;
+                        ope = stack.Pop();
+                    }
                 }
                 else
                 {
-                    if (PriorityInfix(item) > PriorityStack(stack.Peek()))
+                    if (stack.Count == 0)
                     {
                         stack.Push(item);
                     }
                     else
                     {
-                        postfix += stack.Pop();
+                        if (PriorityInfix(item) > PriorityStack(stack.Peek()))
+                        {
+                            stack.Push(item);
+                        }
+                        else
+                        {
+                            postfix += stack.Pop();
+                            stack.Push(item);
+                        }
                     }
                 }
             }
@@ -45,6 +50,10 @@ public static class ExpresionEvaluator
                 postfix += item;
             }
         }
+        do
+        {
+            postfix += stack.Pop();
+        } while (stack.Count != 0);
         return postfix;
     }
 
@@ -71,8 +80,8 @@ public static class ExpresionEvaluator
     };
 
     private static bool IsOperator(char item) => item == '^' || item == '*' || item == '/' || item == '+' || item == '-' || item == '(' || item == ')';
-    
-    private static string ToPostfix(string infix)
+
+    private static double EvalutePostfix(string postfix)
     {
         throw new NotImplementedException();
     }
